@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const Category = require("../Models/Category")
+const auth = require("../middleware/authorization")
 
 //Create Category
-router.post('/create', async (req, res) => {
+router.post('/create',auth, async (req, res) => {
   try {
     const { body } = req;
     const newCat = new Category({ name: body.name });
@@ -24,7 +25,7 @@ router.get('/', async (req, res) => {
 })
 
 //delete Category
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id',auth, async (req, res) => {
   try {
     const { params } = req;
     await Category.findByIdAndDelete(params.id);
@@ -35,3 +36,5 @@ router.delete('/delete/:id', async (req, res) => {
 })
 
 module.exports = router;
+
+
