@@ -13,7 +13,7 @@
 '/api/user/delete/:id'
 
 <!-- Post -->
-'api/post/all/get'
+'api/post/all/get?author=&cat='
 
 'api/post/:id'
 

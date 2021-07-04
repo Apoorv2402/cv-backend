@@ -66,7 +66,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // Get All posts
-router.get('/all/get', async (req, res) => {
+router.get('/', async (req, res) => {
   try{
     const { query } = req;
     let username = query.author;
