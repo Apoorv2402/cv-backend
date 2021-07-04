@@ -7,9 +7,6 @@ const CategorySchema = new Schema({
     required:true, 
     unique:true
   }
-},
-{
-  timestamps:true
 }
 );
 
