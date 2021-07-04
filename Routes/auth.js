@@ -3,6 +3,7 @@ const User = require("../Models/User")
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/authorization")
 
 dotenv.config();
 
@@ -73,6 +74,12 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     res.status(500).json(error)
   }
+})
+
+router.get('/user',auth,(req,res) => {
+  User.findById(req.user.id)
+  .select('-password')
+  .then(user => res.json(user));
 })
 
 module.exports = router;
