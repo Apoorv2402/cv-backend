@@ -1,12 +1,15 @@
 <!-- API Docs -->
 
-<!-- Auth -->
+<!-- Auth Register-->
 '/api/auth/register'
+<!-- Auth Login-->
 '/api/auth/login'
 
-<!-- users -->
+<!-- users Update-->
 '/api/user/update/:id'
+<!-- users details-->
 '/api/user/details/:id'
+<!-- users delete-->
 '/api/user/delete/:id'
 
 <!-- Post -->
