@@ -39,7 +39,8 @@ router.post('/register', async (req, res) => {
     let id = user._id;
     
     jwt.sign({id} , process.env.ACCESS_TOKEN_SECRET, 
-      { expiresIn: (3600 * 24) }, 
+      //token expiry 14 days
+      { expiresIn: (3600 * 24 * 14) }, 
       (err, token) => {
         if (err) return res.status(400).json({ message : err })
         
@@ -47,16 +48,24 @@ router.post('/register', async (req, res) => {
       return res.status(200).json({ user: response, token: token });
     });
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error);
   }
-})
+});
 
 router.post('/login', async (req, res) => {
   try {
     const { body } = req;
-    if(!body.username || !body.password) return res.status(400).json({message:"Enter all credentials"})
+    if(!body.username || !body.password) {
+      return res.status(400).json({message:"Enter all credentials"})
+    };
     
-    const user = await User.findOne({ username: body.username })
+    const user;
+    user = await User.findOne({ username: body.username })
+
+    if(!user){
+      user = await User.findOne({ email: body.username })
+    }
+
     !user && res.status(400).json({message:"User does not exist"});
     
     const validation = await bcrypt.compare(body.password, user.password)
@@ -64,10 +73,11 @@ router.post('/login', async (req, res) => {
     
     let id = user._id;
     jwt.sign({id} , process.env.ACCESS_TOKEN_SECRET, 
-      { expiresIn: (3600 * 24) }, 
+      // token expires in 14 days
+      { expiresIn: (3600 * 24 * 14) }, 
       (err, token) => {
         if (err) return res.status(400).json({ message : err })
-        
+
         const { password, ...response } = user._doc;
       return res.status(200).json({ user: response, token: token });
     }); 
