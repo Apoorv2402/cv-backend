@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({message:"Enter all credentials"})
     };
     
-    const user;
+    let user;
     user = await User.findOne({ username: body.username })
 
     if(!user){
