@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const Post = require("../Models/Post")
-const auth = require("../middleware/authorization")
+const Post = require("../Models/Post");
+const auth = require("../middleware/authorization");
+const Status = require('../Constants/Request_Status');
 
 // Create Post
 router.post('/create',auth, async (req, res) => {
@@ -14,11 +15,11 @@ router.post('/create',auth, async (req, res) => {
       postPicture: body.postPicture,
     })
     const post = await newPost.save();
-    res.status(200).json(post)
+    res.status(Status.OK).json(post)
   } catch (error) {
-    res.status(500).json(error)
+    res.status(Status.INTERNAL_SERVER_ERROR).json(error)
   }
-})
+});
 
 //Update Post
 router.put('/update',auth, async (req, res) => {
@@ -30,14 +31,14 @@ router.put('/update',auth, async (req, res) => {
       let updatedPost = await Post.findByIdAndUpdate(query.pid,{
         ...body
       },{new:true})
-      res.status(200).json(updatedPost)
+      res.status(Status.OK).json(updatedPost)
     }else{
-      res.status(404).json("Authentication error");
+      res.status(Status.NOT_FOUND).json("Authentication error");
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(err);
   }
-})
+});
 
 // Delete Post
 router.delete('/delete',auth, async (req, res) => {
@@ -46,25 +47,25 @@ router.delete('/delete',auth, async (req, res) => {
     const post = await Post.findById(query.pid);
     if(post.username === body.username){
       await Post.findByIdAndDelete(query.pid);
-      res.status(200).json("Post deleted");
+      res.status(Status.OK).json("Post deleted");
     }else{
-      res.status(404).json("Authentication error");
+      res.status(Status.NOT_FOUND).json("Authentication error");
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(err);
   }
-})
+});
 
 // Get post by id
 router.get('/:id', async (req, res) => {
   try{
     const { params } = req;
     const post = await Post.findById(params.id)
-    res.status(200).json(post);
+    res.status(Status.OK).json(post);
   }catch(err){
-    res.status(500).json(err)
+    res.status(Status.INTERNAL_SERVER_ERROR).json(err)
   }
-})
+});
 
 // Get All posts
 router.get('/', async (req, res) => {
@@ -84,11 +85,11 @@ router.get('/', async (req, res) => {
     }else{
       post = await Post.find();
     }
-    res.status(200).json(post);
+    res.status(Status.OK).json(post);
   }catch(err){
-    res.status(400).json(err)
+    res.status(Status.BAD_REQUEST).json(err)
   }
-})
+});
 
 
 module.exports = router;

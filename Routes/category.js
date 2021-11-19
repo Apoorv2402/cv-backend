@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const Category = require("../Models/Category")
-const auth = require("../middleware/authorization")
+const Category = require("../Models/Category");
+const auth = require("../middleware/authorization");
+const Status = require('../Constants/Request_Status');
 
 //Create Category
 router.post('/create',auth, async (req, res) => {
@@ -8,9 +9,9 @@ router.post('/create',auth, async (req, res) => {
     const { body } = req;
     const newCat = new Category({ name: body.name });
     const category = await newCat.save();
-    res.status(200).json(category);
+    res.status(Status.OK).json(category);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(error);
   }
 })
 
@@ -18,9 +19,9 @@ router.post('/create',auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const category = await Category.find();
-    res.status(200).json(category);
+    res.status(Status.OK).json(category);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(error);
   }
 })
 
@@ -29,9 +30,9 @@ router.delete('/delete/:id',auth, async (req, res) => {
   try {
     const { params } = req;
     await Category.findByIdAndDelete(params.id);
-    res.status(200).json("deleted category");
+    res.status(Status.OK).json("deleted category");
   } catch (error) {
-    res.status(500).json(error);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(error);
   }
 })
 

@@ -31,5 +31,5 @@ app.use('/api/post', PostRoute);
 app.use('/api/category', CategoryRoute);
 
 app.listen("5000", () => {
-  console.log("Server up & Running")
+  console.log("Server up & Running at localhost:5000")
 });

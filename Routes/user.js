@@ -2,17 +2,19 @@ const router = require("express").Router();
 const User = require("../Models/User")
 const Post = require("../Models/Post")
 const bcrypt = require("bcrypt");
-const auth = require("../middleware/authorization")
+const auth = require("../middleware/authorization");
+const Status = require('../Constants/Request_Status');
+const { OK } = require("../Constants/Request_Status");
 
 router.get('/details/:id',async(req,res)=>{
   const { body, params } = req;
   try{
     const user = await User.findById(params.id);
     const {password, ...response }= user._doc;
-    res.status(200).json(response);
+    res.status(Status.OK).json(response);
   }
   catch(error){
-    res.status(404).json(error);
+    res.status(Status.INTERNAL_SERVER_ERROR).json(error);
   }
 });
 
@@ -27,13 +29,13 @@ router.put('/update/:id', auth, async (req, res) => {
       const updatedUser = await User.findByIdAndUpdate(params.id, {
         $set: body,
       })
-      res.status(200).json(updatedUser);
+      res.status(Status.OK).json(updatedUser);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(Status.INTERNAL_SERVER_ERROR).json(err);
     }
   }
   else {
-    res.status(401).json("Unauthorised");
+    res.status(Status.UNAUTHORIZED).json("Unauthorised");
   }
 });
 
@@ -45,16 +47,16 @@ router.delete('/delete/:id', auth, async (req, res) => {
       try {
         await Post.deleteMany({username: selectedUser.username})
         await User.findByIdAndDelete(params.id)
-        res.status(200).json("User data deleted");
+        res.status(Status,OK).json("User data deleted");
       } catch (err) {
-        res.status(500).json(err);
+        res.status(Status.INTERNAL_SERVER_ERROR).json(err);
       }
     }catch{
-      res.status(404).json("User not found");
+      res.status(Status.NOT_FOUND).json("User not found");
     }
   }
   else {
-    res.status(401).json("Unauthorised");
+    res.status(Status.UNAUTHORIZED).json("Unauthorised");
   }
 })
 
